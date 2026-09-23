@@ -6,7 +6,7 @@ This repository contains a Flask prototype for the [YourEyes Unity client](https
 
 - The app registers `POST /describe`, `POST /clothes`, `POST /translate`, `POST /tts`, `POST /read`, and `GET`/`POST /command`. `GET /hello` is a smoke endpoint.
 - Set `GOOGLE_GEMINI_API_KEY` in the server environment for image analysis. `GEMINI_MODEL` selects the gateway model (default: `gemini-2.5-flash`). Unity uses `POST /gemini/generate` at `http://127.0.0.1:5000`, with a `contents` request and `candidates` response.
-- The Python dependencies are Flask, PyTorch, Transformers, OpenCV, NumPy, Pillow, Requests, pytesseract, textract, gTTS, and miniaudio. OCR also needs a Tesseract installation; model code downloads public pretrained checkpoints at import time. Install and validate those dependencies for your platform before attempting a full run.
+- Use Python 3.12 and install the pinned Python dependencies with `python -m pip install -r requirements.txt`. Install the Tesseract executable separately for OCR. Model code downloads public pretrained checkpoints at import time.
 - The development entry point is `python "YourEyes Backend (Flask).py"`. It binds to `127.0.0.1:5000` by default with the debugger disabled. `HOST` can change the bind address.
 - The lightweight route checks run without model downloads: create a Python environment, install Flask, then run `python -m unittest discover -s tests -v`.
 
