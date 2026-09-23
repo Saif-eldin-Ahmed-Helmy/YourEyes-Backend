@@ -129,7 +129,16 @@ celerybeat.pid
 
 # Environments
 .env
+.env.*
+!.env.example
 .venv
+.devagent/
+.agents/
+.codex/
+.gemini/
+.config/
+.idea/
+.vscode/
 env/
 venv/
 ENV/
