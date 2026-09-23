@@ -1,9 +1,10 @@
-﻿from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify
 import cv2
 import numpy as np
 import torch
 from transformers import SegformerImageProcessor, AutoModelForSemanticSegmentation
 import requests
+import os
 import base64
 
 # Blueprint
@@ -16,11 +17,13 @@ model = AutoModelForSemanticSegmentation.from_pretrained(model_name)
 model.eval()
 
 # Gemini API constants
-API_KEY = "***REMOVED***"
-BASE_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
+API_KEY = os.environ.get("GOOGLE_GEMINI_API_KEY")
+BASE_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
 @clothes_bp.route('/clothes', methods=['POST'])
 def segment_and_analyze_clothes():
+    if not API_KEY:
+        return jsonify({"error": "Gemini key is not configured"}), 503
     try:
         if 'image' not in request.files:
             return jsonify({'error': 'No image file provided'}), 400
@@ -92,16 +95,16 @@ def segment_and_analyze_clothes():
         }
 
         response = requests.post(
-            BASE_API_URL + API_KEY,
-            headers={"Content-Type": "application/json"},
-            json=payload
+            BASE_API_URL,
+            headers={"Content-Type": "application/json", "x-goog-api-key": API_KEY},
+            json=payload,
+            timeout=30
         )
 
         if response.status_code != 200:
-            print("Gemini error:", response.text)
             return jsonify({'error': 'Gemini API failed'}), 500
 
         return jsonify(response.json())
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'Clothing analysis is temporarily unavailable'}), 500

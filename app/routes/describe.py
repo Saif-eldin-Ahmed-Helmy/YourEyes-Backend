@@ -12,7 +12,7 @@ describe_bp = Blueprint('describe_bp', __name__)
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
 model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
-@describe_bp.route('/describe', method3s=['POST'])
+@describe_bp.route('/describe', methods=['POST'])
 def describe_image():
     """
     Expects a multipart/form-data POST with an 'image' file.
